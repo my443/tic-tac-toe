@@ -12,7 +12,7 @@
 import math
 
 ## The grid of blank spaces.
-t = [1, 1, 3, 2, 1, 1, 1, 1, 1]
+t = [2, 1, 1, 2, 1, 1, 1, 1, 1]
 solutions = [[0, 1, 2],[3, 4, 5],[6, 7, 8],[0, 3, 6],[1, 4, 7],[2, 5, 8],[2, 4, 6], [0, 4, 8]]
 
 x = 3
@@ -32,15 +32,17 @@ def print_grid():
 def check_win(player, row_value):
 	"""	Purpose: to see if there is a row where you can win.
 	
-		Player: x or y
-		row_value: Calculated value of the row. (All entered values multiplied)
-				
-		## Interesting Note
+		Player: 	string	: x or y
+		row_value:  integer	: Calculated value of the row. (All entered values multiplied)
+
+		returns:	True	: If the row can be a winning row.
+					False	: If the row cannot become a winning row.
+					
+		## Interesting Note	
 		p**(1./3.) is finding the cubed root of a value. 	
 			(https://stackoverflow.com/questions/28014241/how-to-find-cube-root-using-python/28014245)
 	"""
 	p = player_to_num(player)
-	#print ("Player Num = ", p)
 
 	if (row_value != 1) and (p == math.sqrt(row_value)): 
 		print (row_value, ": Winning row")
@@ -48,48 +50,45 @@ def check_win(player, row_value):
 	else:
 		print (row_value, ": Not winning")
 		return False
-
-# def add_check(player, location):
-	# p = player_to_num(player)
-	# t[location] = p
-
-def win_row(player, row):
-	""" Purpose: If the row can be won, add your item there and win the game.
-	
-		row: a number that fits within the solutions list
-		player: x or y (the person making the move)
-	"""
-	p = player_to_num(player)
-	
-	for c in range(3):
-		coord = solutions[row][c]
-		print (coord)
-		t[coord] = p			
-
-def block_row(player, row):
-	pass
-	
+		
 def check_block(player, row):
 	""" Purpose: If the opposing team can win by adding to this row, block it.
 	
+		row: 	integer : that fits within the solutions list
+		player: string 	: x or y (the person making the move)
+		
+		returns:	True	: If the row can be a winning row.
+					False	: If the row cannot become a winning row.
 	"""
 	opposite = opposite_player(player)
 	
 	p  = player_to_num(player)
-	#op = player_to_num(opposite)
 	
 	print (opposite)
 	
 	result = check_win(opposite, row)
 	
 	return result
+	
+def win_row(player, row):
+	""" Purpose: If the row can be won, add your item there and win the game.
+				 The whole row is re-filled with your number.
+	
+		row: 	integer : that fits within the solutions list
+		player: string 	: x or y (the person making the move)
+	"""
+	p = player_to_num(player)
+	
+	for num in possible_solution_set:
+		update_coordinates 		= solutions[row][num]
+		t[update_coordinates] 	= p			
+		
+		print (update_coordinates)
 
 def check_best(player, row_value, row):
 	p  = player_to_num(player)
 	x = solutions[row]
 	
-	# print(x)
-	# print(row_value)
 	if row_value == p:
 		for i in x:
 			if t[i] == 1:
@@ -99,7 +98,6 @@ def check_best(player, row_value, row):
 				return True
 	else:
 		return False
-			
 		
 def opposite_player(player):
 	""" Find the opposite player and return the opposite player number.
@@ -144,10 +142,9 @@ def calc_values(t, solutions):
 	print ("### Winning Test ###") 				## Remove after testing
 	row_value = 1
 	c = 0
-	for i in solutions:
-		for j in range (3):
-			z = i[j]
-			row_value = row_value * t[z]
+	for possible_solution_set in solutions:
+		for num in possible_solution_set:
+			row_value = row_value * t[num]
 		
 		if check_win("x", row_value):
 			win_row("x", c)
@@ -164,14 +161,13 @@ def calc_values(t, solutions):
 	print ("### Blocking Test ###") 				## Remove after testing
 	row_value = 1
 	c = 0
-	for i in solutions:
-		for j in range (3):
-			z = i[j]
-			row_value = row_value * t[z]
+	for possible_solution_set in solutions:
+		for num in possible_solution_set:
+			row_value = row_value * t[num]
 				
 		if check_block("x", row_value):
-			print(i)
-			for num in i:
+			print(num)
+			for num in possible_solution_set:
 				if t[num] == 1:
 					t[num] = 3						## TODO - Make this dynamic to x or y.
 			print('yup')
@@ -187,20 +183,32 @@ def calc_values(t, solutions):
 	print ("### Next Move Test ###") 				## Remove after testing
 	row_value = 1
 	c = 0
-	for i in solutions:	
-		for j in range (3):
-			z = i[j]
-		row_value = row_value * t[z]
+	for possible_solution_set in solutions:	
+		for num in possible_solution_set:
+			row_value = row_value * t[num]
 	
-	check_best("x", row_value, c)	
-	print (c, row_value)	
+		check_best("x", row_value, c)	
+		
+		print (c, row_value)
+		c += 1
+		row_value = 1	
 			
 	print ("### Next Move Test End ###")			## Remove after testing
 
 	## Test for Blank Move
 	print ("### Blank Move Test ###") 				## Remove after testing
-
+	row_value = 1
+	c = 0
+	for possible_solution_set in solutions:	
+		for num in possible_solution_set:
+			row_value = row_value * t[num]
 	
+			if row_value == 1: 
+				t[0] = 3;							## Reset for x
+				
+		print (c, row_value)
+		c += 1
+		row_value = 1	
 		
 	print ("### Blank Move Test End ###")			## Remove after testing
 	
