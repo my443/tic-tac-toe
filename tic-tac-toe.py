@@ -12,7 +12,7 @@
 import math
 
 ## The grid of blank spaces.
-t = [3, 1, 1, 2, 2, 1, 1, 1, 1]
+t = [1, 1, 3, 2, 1, 1, 1, 1, 1]
 solutions = [[0, 1, 2],[3, 4, 5],[6, 7, 8],[0, 3, 6],[1, 4, 7],[2, 5, 8],[2, 4, 6], [0, 4, 8]]
 
 x = 3
@@ -49,9 +49,9 @@ def check_win(player, row_value):
 		print (row_value, ": Not winning")
 		return False
 
-def add_check(player, location):
-	p = player_to_num(player)
-	t[location] = p
+# def add_check(player, location):
+	# p = player_to_num(player)
+	# t[location] = p
 
 def win_row(player, row):
 	""" Purpose: If the row can be won, add your item there and win the game.
@@ -60,13 +60,16 @@ def win_row(player, row):
 		player: x or y (the person making the move)
 	"""
 	p = player_to_num(player)
+	
 	for c in range(3):
 		coord = solutions[row][c]
 		print (coord)
-		t[coord] = p
-			
+		t[coord] = p			
 
 def block_row(player, row):
+	pass
+	
+def check_block(player, row):
 	""" Purpose: If the opposing team can win by adding to this row, block it.
 	
 	"""
@@ -80,9 +83,24 @@ def block_row(player, row):
 	result = check_win(opposite, row)
 	
 	return result
-	
-	
 
+def check_best(player, row_value, row):
+	p  = player_to_num(player)
+	x = solutions[row]
+	
+	# print(x)
+	# print(row_value)
+	if row_value == p:
+		for i in x:
+			if t[i] == 1:
+				print (t[i])
+				t[i] = p
+				break
+				return True
+	else:
+		return False
+			
+		
 def opposite_player(player):
 	""" Find the opposite player and return the opposite player number.
 		
@@ -112,6 +130,11 @@ def player_to_num(player):
 		p = 1 					## Just to capture bad programming. 				
 	
 	return p
+
+def test_board(t):
+	""" Check to see if any of the rows on the board have won.
+	"""
+	pass
 	
 def calc_values(t, solutions):
 	"""
@@ -136,6 +159,7 @@ def calc_values(t, solutions):
 	
 	print ("### Winning Test End ###\n")			## Remove after testing
 
+
 	## Test for blocking
 	print ("### Blocking Test ###") 				## Remove after testing
 	row_value = 1
@@ -145,7 +169,7 @@ def calc_values(t, solutions):
 			z = i[j]
 			row_value = row_value * t[z]
 				
-		if block_row("x", row_value):
+		if check_block("x", row_value):
 			print(i)
 			for num in i:
 				if t[num] == 1:
@@ -159,9 +183,27 @@ def calc_values(t, solutions):
 
 	print ("### Blocking Test End ###")			## Remove after testing
 
+	## Test for Next Move
+	print ("### Next Move Test ###") 				## Remove after testing
+	row_value = 1
+	c = 0
+	for i in solutions:	
+		for j in range (3):
+			z = i[j]
+		row_value = row_value * t[z]
 	
+	check_best("x", row_value, c)	
+	print (c, row_value)	
+			
+	print ("### Next Move Test End ###")			## Remove after testing
 
+	## Test for Blank Move
+	print ("### Blank Move Test ###") 				## Remove after testing
 
+	
+		
+	print ("### Blank Move Test End ###")			## Remove after testing
+	
 print_grid()
 calc_values(t, solutions)
 
