@@ -12,7 +12,7 @@
 import math
 
 ## The grid of blank spaces.
-t = [3, 3, 1, 1, 3, 1, 1, 1, 1]
+t = [3, 1, 1, 2, 2, 1, 1, 1, 1]
 solutions = [[0, 1, 2],[3, 4, 5],[6, 7, 8],[0, 3, 6],[1, 4, 7],[2, 5, 8],[2, 4, 6], [0, 4, 8]]
 
 x = 3
@@ -40,12 +40,13 @@ def check_win(player, row_value):
 			(https://stackoverflow.com/questions/28014241/how-to-find-cube-root-using-python/28014245)
 	"""
 	p = player_to_num(player)
+	#print ("Player Num = ", p)
 
 	if (row_value != 1) and (p == math.sqrt(row_value)): 
 		print (row_value, ": Winning row")
 		return True
 	else:
-		print ("Not winning")
+		print (row_value, ": Not winning")
 		return False
 
 def add_check(player, location):
@@ -53,15 +54,55 @@ def add_check(player, location):
 	t[location] = p
 
 def win_row(player, row):
+	""" Purpose: If the row can be won, add your item there and win the game.
+	
+		row: a number that fits within the solutions list
+		player: x or y (the person making the move)
+	"""
 	p = player_to_num(player)
 	for c in range(3):
 		coord = solutions[row][c]
 		print (coord)
 		t[coord] = p
 			
+
+def block_row(player, row):
+	""" Purpose: If the opposing team can win by adding to this row, block it.
+	
+	"""
+	opposite = opposite_player(player)
+	
+	p  = player_to_num(player)
+	#op = player_to_num(opposite)
+	
+	print (opposite)
+	
+	result = check_win(opposite, row)
+	
+	return result
+	
+	
+
+def opposite_player(player):
+	""" Find the opposite player and return the opposite player number.
 		
+		Player: 	string 	: x or y
+		returns: 	string	: x or y
+	"""	
+	
+	if player == "x":
+		opp_player = "y"
+	elif player == "y":
+		opp_player = "y"
+	else: 
+		opp_player = "z"
+
+	print (opp_player)		
+	return opp_player
+	
 def player_to_num(player):
-	""" Convert the player to number
+	""" Player: 	string : x or y
+		Returns: 	int	   : 1 = None, 2 = y, 3 = x
 	"""
 	if player == "x": 
 		p = 3 
@@ -75,6 +116,9 @@ def player_to_num(player):
 def calc_values(t, solutions):
 	"""
 	"""
+	
+	## Test for Winning
+	print ("### Winning Test ###") 				## Remove after testing
 	row_value = 1
 	c = 0
 	for i in solutions:
@@ -84,10 +128,36 @@ def calc_values(t, solutions):
 		
 		if check_win("x", row_value):
 			win_row("x", c)
+			break
+		
+		print (c, row_value)
+		c += 1
+		row_value = 1
+	
+	print ("### Winning Test End ###\n")			## Remove after testing
+
+	## Test for blocking
+	print ("### Blocking Test ###") 				## Remove after testing
+	row_value = 1
+	c = 0
+	for i in solutions:
+		for j in range (3):
+			z = i[j]
+			row_value = row_value * t[z]
+				
+		if block_row("x", row_value):
+			print(i)
+			for num in i:
+				if t[num] == 1:
+					t[num] = 3						## TODO - Make this dynamic to x or y.
+			print('yup')
+			#add_item("x", location)
+
 		print (c, row_value)
 		c += 1
 		row_value = 1
 
+	print ("### Blocking Test End ###")			## Remove after testing
 
 	
 
