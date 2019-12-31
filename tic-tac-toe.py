@@ -12,13 +12,15 @@
 import math
 
 ## The grid of blank spaces.
-t = [3, 1, 1, 1, 3, 1, 1, 1, 3]
+t = [3, 3, 1, 1, 3, 1, 1, 1, 1]
+solutions = [[0, 1, 2],[3, 4, 5],[6, 7, 8],[0, 3, 6],[1, 4, 7],[2, 5, 8],[2, 4, 6], [0, 4, 8]]
 
 x = 3
 o = 2
 b = 1			# Blank = 1
 
 def print_grid():
+	print ("\n")
 	s = ""						## String that will contain the view.
 	c = 0						## Used for figuring out the row.
 	for item in t:
@@ -27,24 +29,24 @@ def print_grid():
 		if (c%3 == 0): s = s + ("\n") 		## If the last column num is divisible by 3, put it on a new row.
 	print (s)
 
-def check_win(player, t):
-	"""	Player: x or y
-		t: The stored values of the playing board. 
+def check_win(player, row_value):
+	"""	Purpose: to see if there is a row where you can win.
+	
+		Player: x or y
+		row_value: Calculated value of the row. (All entered values multiplied)
+				
+		## Interesting Note
 		p**(1./3.) is finding the cubed root of a value. 	
 			(https://stackoverflow.com/questions/28014241/how-to-find-cube-root-using-python/28014245)
 	"""
 	p = player_to_num(player)
-		
-	cv = calc_values(t)			## Get the calculated values
-	
-	c = 0						## Counter
-	for item in cv: 
-		if (item != 1) and (p == math.sqrt(item)): 
-			print (c, item, ": Winning row")
-			win_row(player, c)
-		else: 
-			print (c, item)
-			c += 1				## Increment counter
+
+	if (row_value != 1) and (p == math.sqrt(row_value)): 
+		print (row_value, ": Winning row")
+		return True
+	else:
+		print ("Not winning")
+		return False
 
 def add_check(player, location):
 	p = player_to_num(player)
@@ -52,22 +54,11 @@ def add_check(player, location):
 
 def win_row(player, row):
 	p = player_to_num(player)
-	if row == 0: 
-		t[0]=t[1]=t[2] = p
-	if row == 1: 
-		t[3]=t[4]=t[5] = p
-	if row == 2: 
-		t[6]=t[7]=t[8] = p
-	if row == 3: 
-		t[0]=t[3]=t[6] = p	
-	if row == 4: 
-		t[1]=t[4]=t[7] = p
-	if row == 5: 
-		t[2]=t[5]=t[8] = p
-	if row == 6: 
-		t[2]=t[4]=t[6] = p
-	if row == 7: 
-		t[0]=t[14]=t[8] = p					
+	for c in range(3):
+		coord = solutions[row][c]
+		print (coord)
+		t[coord] = p
+			
 		
 def player_to_num(player):
 	""" Convert the player to number
@@ -81,25 +72,32 @@ def player_to_num(player):
 	
 	return p
 	
-def calc_values(t):
-	""" Ways to measure winning. 
-			First 3: by rows
-			Next 3:	 by columns
-			Final 2: by diagonals
+def calc_values(t, solutions):
 	"""
-	calc = []
-	calc.append(t[0] * t[1] * t[2])
-	calc.append(t[3] * t[4] * t[5])
-	calc.append(t[6] * t[7] * t[8])
-	calc.append(t[0] * t[3] * t[6])
-	calc.append(t[1] * t[4] * t[7])
-	calc.append(t[2] * t[5] * t[8])
-	calc.append(t[2] * t[4] * t[6])
-	calc.append(t[0] * t[4] * t[8])
+	"""
+	row_value = 1
+	c = 0
+	for i in solutions:
+		for j in range (3):
+			z = i[j]
+			row_value = row_value * t[z]
+		
+		if check_win("x", row_value):
+			win_row("x", c)
+		print (c, row_value)
+		c += 1
+		row_value = 1
+
+
 	
-	return calc
-	
+
+
 print_grid()
-check_win("x", t)
+calc_values(t, solutions)
+
 print_grid()
 
+## Prints the rows.
+# for i in range (9):
+	# m = i % 3
+	# print(i, ":", m)
