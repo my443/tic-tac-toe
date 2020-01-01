@@ -185,100 +185,74 @@ def player_to_num(player):
 	
 	return p
 
-def test_board(t):
+def test_board_for_winner(t):
 	""" Check to see if any of the rows on the board have won.
+	
+		returns:	1: if no-one has won
+					2: if o's have won
+					3: if x's have won
 	"""
-	pass
-	
-def calc_values(t, solutions):
-	"""
-	"""
-	if check_win("x"):
-		print ("win!")
-	else: 
-		print ("not a win.")
-	
-	print_grid()
-		
-	## Test for Winning
-	# print ("### Winning Test ###") 				## Remove after testing
-
-	# for row, possible_solution_set in enumerate(solutions):
-		# row_value = 1
-		# for num in possible_solution_set:
-			# row_value = row_value * t[num]
-		
-		# if check_win("x", row_value):
-			# win_row("x", row)
-			# break
-		
-		# print (row, row_value)
-
-	
-	# print ("### Winning Test End ###\n")			## Remove after testing
-
-	
-
-	
-	# ## Test for blocking
-	# print ("### Blocking Test ###") 				## Remove after testing
-	# row_value = 1
-	# c = 0
-	# for possible_solution_set in solutions:
-		# for num in possible_solution_set:
-			# row_value = row_value * t[num]
-				
-		# if check_block("x", row_value):
-			# print(num)
-			# for num in possible_solution_set:
-				# if t[num] == 1:
-					# t[num] = 3						## TODO - Make this dynamic to x or y.
-			# print('yup')
-			# #add_item("x", location)
-
-		# print (c, row_value)
-		# c += 1
-		# row_value = 1
-
-	# print ("### Blocking Test End ###")			## Remove after testing
-
-	# ## Test for Next Move
-	# print ("### Next Move Test ###") 				## Remove after testing
-	# row_value = 1
-	# c = 0
-	# for possible_solution_set in solutions:	
-		# for num in possible_solution_set:
-			# row_value = row_value * t[num]
-	
-		# check_best("x", row_value, c)	
-		
-		# print (c, row_value)
-		# c += 1
-		# row_value = 1	
+	for row, possible_solution_set in enumerate(solutions):
+		row_value = 1
+		for num in possible_solution_set:
+			row_value = row_value * t[num]
 			
-	# print ("### Next Move Test End ###")			## Remove after testing
-
-	# ## Test for Blank Move
-	# print ("### Blank Move Test ###") 				## Remove after testing
-	# row_value = 1
-	# c = 0
-	# for possible_solution_set in solutions:	
-		# for num in possible_solution_set:
-			# row_value = row_value * t[num]
+			if row_value == 27: 
+				winner = 3
+				break
+			elif row_value == 8: 
+				winner = 2
+				break
+			else: 
+				winner == 1
 	
-			# if row_value == 1: 
-				# t[0] = 3;							## Reset for x
-				
-		# print (c, row_value)
-		# c += 1
-		# row_value = 1	
+	print("The winner is: ", winner)
+	
+	return winner
+	
+def get_input(player):
+	""" Get input from a player. Validate that it is an integer.
+	
+		returns:	An integer (doesn't let the person get out without an integer.)
+	"""
+	
+	p  = player_to_num(player)
+	
+	release = 0
+	while release == 0:
+		try:
+			value = int(input("Where do you want to go next? (0 to 8 on the grid):  "))
+			if t[value] == 1:
+				t[value] = p
+				release = 1
+			else:
+				print("You have selected a square where something already has been placed")
+				release = 0
+		except Exception as e:
+			#print (e)
+			print("Please enter number where you want to move.")
+			print ("**Your Choices**\n  0 1 2\n  3 4 5\n  6 7 8")
+			print_grid()
+			release = 0
 		
-	# print ("### Blank Move Test End ###")			## Remove after testing
+
+def calc_values():
+	"""
+	"""
+	# if check_win("x"):
+		# print ("win!")
+	# else: 
+		# print ("not a win.")
+	
+	#print_grid()
+		
+	get_input("x")
+	print_grid()
 	
 print_grid()
-calc_values(t, solutions)
+calc_values()
 
-print_grid()
+#print_grid()
 
 ### Reference Materials
 ## 	Enumerations and counting in loops
