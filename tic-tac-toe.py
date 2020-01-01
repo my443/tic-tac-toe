@@ -1,4 +1,4 @@
-## Python 3.6
+## Python 3.7
 ## Tic-Tac-Toe by math
 ## License: MIT
 ## 
@@ -17,7 +17,9 @@ clear = lambda: os.system('cls') 	## clear command on Windows System
 ## clear = lambda: os.system('clear') 	## clear command on Linux System
 
 import logging
-logging.basicConfig(level=logging.INFO, filename='tic-tac-toe.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
+log_format = '%(asctime)s %(name)s %(levelname)s %(message)s'
+logging.basicConfig(level=logging.INFO, filename='tic-tac-toe.log', filemode='a', format=log_format)
+
 
 ## The grid of blank spaces.
 t 			= [1, 1, 1, 1, 1, 1, 1, 1, 1]
