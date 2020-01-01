@@ -10,24 +10,29 @@
 ## 4. Place your symbol on a row with no other symbols. 
 
 import math
+import os
+clear = lambda: os.system('cls') ## clear command
 
 ## The grid of blank spaces.
-t = [3, 1, 1, 2, 1, 1, 1, 1, 1]
-solutions = [[0, 1, 2],[3, 4, 5],[6, 7, 8],[0, 3, 6],[1, 4, 7],[2, 5, 8],[2, 4, 6], [0, 4, 8]]
+t 			= [3, 1, 1, 2, 1, 1, 1, 1, 1]
+solutions 	= [[0, 1, 2],[3, 4, 5],[6, 7, 8],[0, 3, 6],[1, 4, 7],[2, 5, 8],[2, 4, 6], [0, 4, 8]]
+display		= ["", "-", "y", "x"] 				## First item is blank - just for ease of lining up 1, 2, 3 with "blank", "y", "x".
 
 x = 3
 o = 2
 b = 1			# Blank = 1
 
 def print_grid():
-	print ("\n")
-	s = ""						## String that will contain the view.
+	print ("**Current Board**")
+	#print ("  ")
+	s = "  "						## String that will contain the view.
 	c = 0						## Used for figuring out the row.
 	for item in t:
-		s = s + str(item) + " "
+		s = s + display[item] + " "
 		c += 1
-		if (c%3 == 0): s = s + ("\n") 		## If the last column num is divisible by 3, put it on a new row.
+		if (c%3 == 0): s = s + ("\n  ") 		## If the last column num is divisible by 3, put it on a new row.
 	print (s)
+	print ("**Possible Choices**\n  0 1 2\n  3 4 5\n  6 7 8")
 
 def check_win(player):
 	"""	Purpose: to see if there is a row where you can win.
@@ -51,10 +56,11 @@ def check_win(player):
 					if t[num] == 1:
 						t[num] = p
 						return True	
-
+						
+	#print ("Didn't use check_win")
 	return False
 		
-def check_block(player, row):
+def check_block(player):
 	
 	""" Purpose: If the opposing team can win by adding to this row, block it.
 	
@@ -72,29 +78,14 @@ def check_block(player, row):
 		for num in possible_solution_set:
 			row_value = row_value * t[num]
 			
-			if (row_value != 1) and (op == math.sqrt(row_value)): 
-				for num in possible_solution_set:
-					if t[num] == 1:
-						t[num] = op	
-						return True		
+		if (row_value != 1) and (op == math.sqrt(row_value)): 
+			for num in possible_solution_set:
+				if t[num] == 1:
+					t[num] = op	
+					return True		
 	
+	# print ("Didn't use check_block")
 	return False
-
-def win_row(player, row):
-	## NOT IN USE
-	""" Purpose: If the row can be won, add your item there and win the game.
-				 The whole row is re-filled with your number.
-	
-		row: 	integer : that fits within the solutions list
-		player: string 	: x or y (the person making the move)
-	"""
-	p = player_to_num(player)
-	
-	for num in solutions[row]:
-		update_coordinates 		= num
-		t[update_coordinates] 	= p			
-		
-		print (update_coordinates)
 
 def check_best(player):
 	""" Determine if there is a row that already has one of your markers on it.
@@ -111,12 +102,13 @@ def check_best(player):
 		for num in possible_solution_set:
 			row_value = row_value * t[num]	
 			
-			if row_value == p:
-				for num in possible_solution_set:
-					if t[num] == 1:
-						t[num] = p
-						return True
+		if row_value == p:
+			for num in possible_solution_set:
+				if t[num] == 1:
+					t[num] = p
+					return True
 
+	#print ("Didn't use check_best")
 	return False
 
 def find_blank_row(player):
@@ -135,7 +127,8 @@ def find_blank_row(player):
 			if row_value == 1: 
 				possible_solution_set[0] = p
 				return True
-	
+				
+	# print ("Didn't use find_blank_row")
 	return False		
 
 def find_any_space(player):
@@ -147,11 +140,12 @@ def find_any_space(player):
 	
 	p  = player_to_num(player)
 	
-	try:
+	if 1 in t:
 		num = t.index(1)
 		t[num] = p
+		print ("Used find_any_space")
 		return True
-	except:
+	else: 
 		print("No move can be made.")
 		return False
 	
@@ -169,7 +163,7 @@ def opposite_player(player):
 	else: 
 		opp_player = "z"
 
-	print (opp_player)		
+	# print (opp_player)		
 	return opp_player
 	
 def player_to_num(player):
@@ -210,7 +204,7 @@ def test_board_for_winner():
 				winner == 1
 	
 	if winner > 1: 
-		print("The winner is: ", winner)
+		print("The winner is: ", display[winner])
 		return True
 	elif winner == 1: 
 		if 1 not in t:
@@ -240,7 +234,7 @@ def get_input(player):
 		except Exception as e:
 			#print (e)
 			print("Please enter number where you want to move.")
-			print ("**Your Choices**\n  0 1 2\n  3 4 5\n  6 7 8")
+			print ("**Possible Choices**\n  0 1 2\n  3 4 5\n  6 7 8")
 			print_grid()
 			release = 0
 		
@@ -254,12 +248,30 @@ def calc_values():
 		# print ("not a win.")
 	
 	#print_grid()
+	print_grid()
 	
 	while not test_board_for_winner():
+		## y's move
 		get_input("y")
 		print_grid()
+		
+		player = "x"
+		## x's move
+		print ("\n** x's move **")
+		if check_win(player):
+			test_board_for_winner()
+		elif check_block(player):
+			test_board_for_winner()
+		elif check_best(player):
+			test_board_for_winner()
+		elif find_blank_row(player):
+			test_board_for_winner()
+		elif find_any_space(player):
+			test_board_for_winner() 
+		
+		print_grid()
 	
-print_grid()
+#print_grid()
 calc_values()
 
 #print_grid()
