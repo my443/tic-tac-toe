@@ -185,13 +185,16 @@ def player_to_num(player):
 	
 	return p
 
-def test_board_for_winner(t):
+def test_board_for_winner():
 	""" Check to see if any of the rows on the board have won.
 	
-		returns:	1: if no-one has won
-					2: if o's have won
-					3: if x's have won
+		returns:	True : If someone has won the game
+					False: If the game should continue because noone has won yet.
+					
 	"""
+	
+	winner = 1
+	
 	for row, possible_solution_set in enumerate(solutions):
 		row_value = 1
 		for num in possible_solution_set:
@@ -206,10 +209,16 @@ def test_board_for_winner(t):
 			else: 
 				winner == 1
 	
-	print("The winner is: ", winner)
-	
-	return winner
-	
+	if winner > 1: 
+		print("The winner is: ", winner)
+		return True
+	elif winner == 1: 
+		if 1 not in t:
+			print ("There is no winner for this game.")
+			return True
+	else:
+		return False
+		
 def get_input(player):
 	""" Get input from a player. Validate that it is an integer.
 	
@@ -245,9 +254,10 @@ def calc_values():
 		# print ("not a win.")
 	
 	#print_grid()
-		
-	get_input("x")
-	print_grid()
+	
+	while not test_board_for_winner():
+		get_input("y")
+		print_grid()
 	
 print_grid()
 calc_values()
