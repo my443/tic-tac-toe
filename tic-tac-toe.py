@@ -14,7 +14,7 @@ import os
 clear = lambda: os.system('cls') ## clear command
 
 ## The grid of blank spaces.
-t 			= [3, 1, 1, 2, 1, 1, 1, 1, 1]
+t 			= [1, 1, 1, 1, 1, 1, 1, 1, 1]
 solutions 	= [[0, 1, 2],[3, 4, 5],[6, 7, 8],[0, 3, 6],[1, 4, 7],[2, 5, 8],[2, 4, 6], [0, 4, 8]]
 display		= ["", "-", "y", "x"] 				## First item is blank - just for ease of lining up 1, 2, 3 with "blank", "y", "x".
 
@@ -70,18 +70,22 @@ def check_block(player):
 		returns:	True	: If the row can be a winning row.
 					False	: If the row cannot become a winning row.
 	"""
-	op = opposite_player(player)
+	op = 2										## This will have to be changed if you want a dynamic player selection
+												## For now it is hard-coded because the human player is always 'y'
+	# opp = opposite_player(player)
+		
 	p  = player_to_num(player)
 	
 	for row, possible_solution_set in enumerate(solutions):
 		row_value = 1
 		for num in possible_solution_set:
 			row_value = row_value * t[num]
+		## print (row, row_value, math.sqrt(row_value), op)
 			
-		if (row_value != 1) and (op == math.sqrt(row_value)): 
+		if math.sqrt(row_value) == float(op): 
 			for num in possible_solution_set:
 				if t[num] == 1:
-					t[num] = op	
+					t[num] = p	
 					return True		
 	
 	# print ("Didn't use check_block")
