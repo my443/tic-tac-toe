@@ -127,10 +127,11 @@ def find_blank_row(player):
 		row_value = 1
 		for num in possible_solution_set:
 			row_value = row_value * t[num]
+			# print(row, row_value)
 			
-			if row_value == 1: 
-				possible_solution_set[0] = p
-				return True
+		if row_value == 1: 
+			t[possible_solution_set[0]] = p
+			return True
 				
 	# print ("Didn't use find_blank_row")
 	return False		
@@ -147,10 +148,10 @@ def find_any_space(player):
 	if 1 in t:
 		num = t.index(1)
 		t[num] = p
-		print ("Used find_any_space")
+		#print ("Used find_any_space")
 		return True
 	else: 
-		print("No move can be made.")
+		#print("No move can be made.")
 		return False
 	
 def opposite_player(player):
@@ -243,40 +244,43 @@ def get_input(player):
 			release = 0
 		
 
-def calc_values():
+def main():
+	""" Main method that runs the whole game.
 	"""
-	"""
-	# if check_win("x"):
-		# print ("win!")
-	# else: 
-		# print ("not a win.")
-	
-	#print_grid()
+
 	print_grid()
 	
 	while not test_board_for_winner():
 		## y's move
-		get_input("y")
+		clear()
 		print_grid()
-		
+		get_input("y")
+		if test_board_for_winner():
+			print_grid()
+			break
+				
 		player = "x"
 		## x's move
 		print ("\n** x's move **")
 		if check_win(player):
 			test_board_for_winner()
+			# print ("Used: check_win")
 		elif check_block(player):
 			test_board_for_winner()
+			# print ("Used: check_block")
 		elif check_best(player):
 			test_board_for_winner()
+			print ("Used: check_best")
 		elif find_blank_row(player):
 			test_board_for_winner()
+			# print ("Used: find_blank_row")
 		elif find_any_space(player):
-			test_board_for_winner() 
+			test_board_for_winner()
+			# print ("Used: find_any_space") 
 		
-		print_grid()
-	
+			
 #print_grid()
-calc_values()
+main()
 
 #print_grid()
 
