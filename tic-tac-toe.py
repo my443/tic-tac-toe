@@ -9,9 +9,15 @@
 ## 3. See if you can add to a row that only has one of your own placed on. 
 ## 4. Place your symbol on a row with no other symbols. 
 
+## Future Updates: if the center is available, X should try to take this at all times.
+
 import math
 import os
-clear = lambda: os.system('cls') ## clear command
+clear = lambda: os.system('cls') 	## clear command on Windows System
+## clear = lambda: os.system('clear') 	## clear command on Linux System
+
+import logging
+logging.basicConfig(level=logging.INFO, filename='tic-tac-toe.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
 
 ## The grid of blank spaces.
 t 			= [1, 1, 1, 1, 1, 1, 1, 1, 1]
@@ -243,40 +249,67 @@ def get_input(player):
 			print_grid()
 			release = 0
 		
-
+def play_again():
+	""" Ask the player if they want to play again.
+	
+		returns:	True	: If player wants to play again (enters 'y'.)
+					False	: If the input fails or the player enters 'n'.
+	"""
+	
+	try: 
+		i = input("Do you want to play again? (y/n) ")
+		if i == "y":
+			for i in range(9):
+				t[i] = 1
+			return True
+		else:
+			return False
+	except:
+		return false
+	
 def main():
 	""" Main method that runs the whole game.
 	"""
-
-	print_grid()
+	again = True
 	
-	while not test_board_for_winner():
-		## y's move
-		clear()
+	while again:
+		logging.info(t)
 		print_grid()
-		get_input("y")
-		if test_board_for_winner():
+		
+		while not test_board_for_winner():
+			logging.info(t)
+			## y's move
+			clear()
 			print_grid()
-			break
-				
-		player = "x"
-		## x's move
-		print ("\n** x's move **")
-		if check_win(player):
-			test_board_for_winner()
-			# print ("Used: check_win")
-		elif check_block(player):
-			test_board_for_winner()
-			# print ("Used: check_block")
-		elif check_best(player):
-			test_board_for_winner()
-			print ("Used: check_best")
-		elif find_blank_row(player):
-			test_board_for_winner()
-			# print ("Used: find_blank_row")
-		elif find_any_space(player):
-			test_board_for_winner()
-			# print ("Used: find_any_space") 
+			get_input("y")
+			if test_board_for_winner():
+				print_grid()
+				break
+					
+			player = "x"
+			## x's move
+			print ("\n** x's move **")
+			if check_win(player):
+				test_board_for_winner()
+				# print ("Used: check_win")
+			elif check_block(player):
+				test_board_for_winner()
+				# print ("Used: check_block")
+			elif check_best(player):
+				test_board_for_winner()
+				#print ("Used: check_best")
+			elif find_blank_row(player):
+				test_board_for_winner()
+				# print ("Used: find_blank_row")
+			elif find_any_space(player):
+				test_board_for_winner()
+				# print ("Used: find_any_space")
+			
+			if test_board_for_winner():
+				print_grid()
+				break 
+		
+		again = play_again()
 		
 			
 #print_grid()
@@ -291,3 +324,4 @@ main()
 ##	Cubed Values
 ##		p**(1./3.) is finding the cubed root of a value. 	
 ##		(https://stackoverflow.com/questions/28014241/how-to-find-cube-root-using-python/28014245)
+##  Clear Command in the Python Console.
